@@ -1,6 +1,8 @@
 <template>
 
-    <div></div>
+    <div>
+        {{ CurrentCryptoPrice.data }}
+    </div>
 
 </template>
 
@@ -21,8 +23,8 @@
             return {
                 cjLtc: 5.82,
                 cjEth: 0.96,
-                previousLiteCoin:{},
-                litecoin: null
+                previousCryptoPrice:{},
+                CurrentCryptoPrice: null
             }
         },
         created(){
@@ -33,57 +35,55 @@
                 Plug
             );
             setInterval(function () {
-                this.getLitecoin()
+                this.getCurrentCryptoPrice()
             }.bind(this), 10000); 
         },
         methods: {
-            getLitecoin: function(){
+            getCurrentCryptoPrice: function(){
                 
-                var ltcEndPoint = 'https://api.cryptonator.com/api/ticker/ltc-gbp';
+                var ltcEndPoint = 'https://api.coinbase.com/v2/prices/LTC-GBP/spot';
                 axios.get(ltcEndPoint)
                     .then(response => {
-                        this.previousLiteCoin = this.litecoin;
-                        this.litecoin = response.data;
-                        if(this.previousLiteCoin != null){
-                            if(this.litecoin.ticker.price > this.previousLiteCoin.ticker.price){
+                        this.previousCryptoPrice = this.CurrentCryptoPrice;
+                        this.CurrentCryptoPrice = response.data.data.amount;
+                            if(this.CurrentCryptoPrice > this.previousCryptoPrice){
                                 this.fireNotification  ("BUY BUY BUY", "LTC: " + 
-                                this.getPercentageChange(this.previousLiteCoin, this.litecoin) + " | " + this.getChange(this.previousLiteCoin, this.litecoin) + " | £" + this.toTwoDecimalPlace(this.litecoin.ticker.price)
+                                this.getPercentageChange(this.previousCryptoPrice, this.CurrentCryptoPrice) + " | " + this.getChange(this.previousCryptoPrice, this.CurrentCryptoPrice) + " | £" + this.toTwoDecimalPlace(this.CurrentCryptoPrice)
                                  + "\n" + this.getCjGains() + " | " + this.getCjsValue()
                                  , Rocket);
-                            }else if (this.litecoin.ticker.price < this.previousLiteCoin.ticker.price){
+                            }else if (this.CurrentCryptoPrice < this.previousCryptoPrice){
                                 this.fireNotification  ("SELL SELL SELL", "LTC: " + 
-                                this.getPercentageChange(this.previousLiteCoin, this.litecoin) + " | " + this.getChange(this.previousLiteCoin, this.litecoin) + " | £" + this.toTwoDecimalPlace(this.litecoin.ticker.price)
+                                this.getPercentageChange(this.previousCryptoPrice, this.CurrentCryptoPrice) + " | " + this.getChange(this.previousCryptoPrice, this.CurrentCryptoPrice) + " | £" + this.toTwoDecimalPlace(this.CurrentCryptoPrice)
                                 + "\n" + this.getCjGains() + " | " + this.getCjsValue()
                                 , Caution);
                             }
-                        }
                     })
             },
 
 
             getPercentageChange: function(oldNumber, newNumber){
-                var decreaseValue = this.invertNumber(oldNumber.ticker.price - newNumber.ticker.price);
-                var symbol = (oldNumber.ticker.price > newNumber.ticker.price) ? "-" : "+";
+                var decreaseValue = this.invertNumber(oldNumber - newNumber);
+                var symbol = (oldNumber > newNumber) ? "-" : "+";
 
-                return symbol + ((decreaseValue / oldNumber.ticker.price) * 100).toFixed(2) + "%";
+                return symbol + ((decreaseValue / oldNumber) * 100).toFixed(2) + "%";
             },
 
             getChange: function(oldNumber, newNumber){
-                var decreaseValue = this.invertNumber(oldNumber.ticker.price - newNumber.ticker.price);
-                var symbol = (oldNumber.ticker.price > newNumber.ticker.price) ? "-" : "+";
+                var decreaseValue = this.invertNumber(oldNumber - newNumber);
+                var symbol = (oldNumber > newNumber) ? "-" : "+";
 
                 return symbol + "£"+ this.toTwoDecimalPlace(decreaseValue);
             },
 
             getCjsValue: function(){
-                return "Holdings £" + (this.litecoin.ticker.price * this.cjLtc).toFixed(2);
+                return "Holdings £" + (this.CurrentCryptoPrice * this.cjLtc).toFixed(2);
             },
 
             getCjGains: function(){
-                var difference = (this.previousLiteCoin.ticker.price - this.litecoin.ticker.price) * this.cjLtc;
+                var difference = (this.previousCryptoPrice - this.CurrentCryptoPrice) * this.cjLtc;
                 difference = this.invertNumber(this.toTwoDecimalPlace(difference))
 
-                if(this.litecoin.ticker.price > this.previousLiteCoin.ticker.price){
+                if(this.CurrentCryptoPrice > this.previousCryptoPrice){
                     return "Gain: £" + difference;
                 }else{
                     return "Loss: £" + difference;
