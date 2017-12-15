@@ -1,7 +1,7 @@
 <template>
 
     <div>
-        {{ CurrentCryptoPrice.data }}
+        {{ CurrentPrice.data }}
     </div>
 
 </template>
@@ -23,8 +23,8 @@
             return {
                 cjLtc: 5.82,
                 cjEth: 0.96,
-                previousCryptoPrice:{},
-                CurrentCryptoPrice: null
+                previousPrice:{},
+                CurrentPrice: null
             }
         },
         created(){
@@ -35,27 +35,29 @@
                 Plug
             );
             setInterval(function () {
-                this.getCurrentCryptoPrice()
+                this.getCurrentPrice()
             }.bind(this), 10000); 
         },
         methods: {
-            getCurrentCryptoPrice: function(){
+            getCurrentPrice: function(){
                 
                 var ltcEndPoint = 'https://api.coinbase.com/v2/prices/LTC-GBP/spot';
                 axios.get(ltcEndPoint)
                     .then(response => {
-                        this.previousCryptoPrice = this.CurrentCryptoPrice;
-                        this.CurrentCryptoPrice = response.data.data.amount;
-                            if(this.CurrentCryptoPrice > this.previousCryptoPrice){
-                                this.fireNotification  ("BUY BUY BUY", "LTC: " + 
-                                this.getPercentageChange(this.previousCryptoPrice, this.CurrentCryptoPrice) + " | " + this.getChange(this.previousCryptoPrice, this.CurrentCryptoPrice) + " | £" + this.toTwoDecimalPlace(this.CurrentCryptoPrice)
-                                 + "\n" + this.getCjGains() + " | " + this.getCjsValue()
-                                 , Rocket);
-                            }else if (this.CurrentCryptoPrice < this.previousCryptoPrice){
-                                this.fireNotification  ("SELL SELL SELL", "LTC: " + 
-                                this.getPercentageChange(this.previousCryptoPrice, this.CurrentCryptoPrice) + " | " + this.getChange(this.previousCryptoPrice, this.CurrentCryptoPrice) + " | £" + this.toTwoDecimalPlace(this.CurrentCryptoPrice)
-                                + "\n" + this.getCjGains() + " | " + this.getCjsValue()
-                                , Caution);
+                        this.previousPrice = this.CurrentPrice;
+                        this.CurrentPrice = response.data.data.amount;
+                            if(this.previousPrice != null){
+                                if(this.CurrentPrice > this.previousPrice){
+                                    this.fireNotification  ("BUY BUY BUY", "LTC: " + 
+                                    this.getPercentageChange(this.previousPrice, this.CurrentPrice) + " | " + this.getChange(this.previousPrice, this.CurrentPrice) + " | £" + this.toTwoDecimalPlace(this.CurrentPrice)
+                                    + "\n" + this.getCjGains() + " | " + this.getCjsValue()
+                                    , Rocket);
+                                }else if (this.CurrentPrice < this.previousPrice){
+                                    this.fireNotification  ("SELL SELL SELL", "LTC: " + 
+                                    this.getPercentageChange(this.previousPrice, this.CurrentPrice) + " | " + this.getChange(this.previousPrice, this.CurrentPrice) + " | £" + this.toTwoDecimalPlace(this.CurrentPrice)
+                                    + "\n" + this.getCjGains() + " | " + this.getCjsValue()
+                                    , Caution);
+                                }
                             }
                     })
             },
@@ -76,14 +78,14 @@
             },
 
             getCjsValue: function(){
-                return "Holdings £" + (this.CurrentCryptoPrice * this.cjLtc).toFixed(2);
+                return "Holdings £" + (this.CurrentPrice * this.cjLtc).toFixed(2);
             },
 
             getCjGains: function(){
-                var difference = (this.previousCryptoPrice - this.CurrentCryptoPrice) * this.cjLtc;
+                var difference = (this.previousPrice - this.CurrentPrice) * this.cjLtc;
                 difference = this.invertNumber(this.toTwoDecimalPlace(difference))
 
-                if(this.CurrentCryptoPrice > this.previousCryptoPrice){
+                if(this.CurrentPrice > this.previousPrice){
                     return "Gain: £" + difference;
                 }else{
                     return "Loss: £" + difference;
