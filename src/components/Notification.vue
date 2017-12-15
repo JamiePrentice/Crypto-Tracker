@@ -1,7 +1,16 @@
 <template>
 
     <div>
-        {{ CurrentPrice.data }}
+        <form class="form-inline">
+            <div class="form-group">
+                <label># of LTC:</label>
+                <input type="text" v-model="numberCoinsOwned" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Buy in £:</label>
+                <input type="text" v-model="buyInPrice" class="form-control">
+            </div>
+        </form>
     </div>
 
 </template>
@@ -21,8 +30,8 @@
         mixins: [common],
         data() {
             return {
-                cjLtc: 5.82,
-                cjEth: 0.96,
+                buyInPrice: 1.00,
+                numberCoinsOwned: 5.82,
                 previousPrice:{},
                 CurrentPrice: null
             }
@@ -31,7 +40,7 @@
             this.registerNotifications();
             this.fireNotification (
                 "Connected",
-                "Let's track Colins crypto \n",
+                "Tracking your LTC",
                 Plug
             );
             setInterval(function () {
@@ -50,12 +59,14 @@
                                 if(this.CurrentPrice > this.previousPrice){
                                     this.fireNotification  ("BUY BUY BUY", "LTC: " + 
                                     this.getPercentageChange(this.previousPrice, this.CurrentPrice) + " | " + this.getChange(this.previousPrice, this.CurrentPrice) + " | £" + this.toTwoDecimalPlace(this.CurrentPrice)
-                                    + "\n" + this.getCjGains() + " | " + this.getCjsValue()
+                                    + "\n" + this.getCurrentGains() + "\n"
+                                     + this.getTotalHoldingValue() + " | " + this.getTotalGain()
                                     , Rocket);
                                 }else if (this.CurrentPrice < this.previousPrice){
                                     this.fireNotification  ("SELL SELL SELL", "LTC: " + 
                                     this.getPercentageChange(this.previousPrice, this.CurrentPrice) + " | " + this.getChange(this.previousPrice, this.CurrentPrice) + " | £" + this.toTwoDecimalPlace(this.CurrentPrice)
-                                    + "\n" + this.getCjGains() + " | " + this.getCjsValue()
+                                    + "\n" + this.getCurrentGains() + "\n"
+                                    + this.getTotalHoldingValue() + " | " + this.getTotalGain()
                                     , Caution);
                                 }
                             }
@@ -77,18 +88,26 @@
                 return symbol + "£"+ this.toTwoDecimalPlace(decreaseValue);
             },
 
-            getCjsValue: function(){
-                return "Holdings £" + (this.CurrentPrice * this.cjLtc).toFixed(2);
+            getTotalHoldingValue: function(){
+                return "Holdings £" + this.getCurrentValue();
             },
 
-            getCjGains: function(){
-                var difference = (this.previousPrice - this.CurrentPrice) * this.cjLtc;
+            getTotalGain: function(){
+                return "Gains £" + this.getCurrentValue() - toFloat(this.buyInPrice);
+            },
+
+            getCurrentValue:function(){
+                return this.toTwoDecimalPlace(this.CurrentPrice * this.numberCoinsOwned)
+            },
+
+            getCurrentGains: function(){
+                var difference = (this.previousPrice - this.CurrentPrice) * this.numberCoinsOwned;
                 difference = this.invertNumber(this.toTwoDecimalPlace(difference))
 
                 if(this.CurrentPrice > this.previousPrice){
-                    return "Gain: £" + difference;
+                    return "You just gained: £" + difference;
                 }else{
-                    return "Loss: £" + difference;
+                    return "You just lost: £" + difference;
                 }
             }
 
@@ -99,5 +118,7 @@
 
 
 <style scoped>
-
+label{
+    color: #FFF;
+}
 </style>
