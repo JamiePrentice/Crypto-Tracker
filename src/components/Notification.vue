@@ -6,10 +6,6 @@
                 <label># of LTC:</label>
                 <input type="text" v-model="numberCoinsOwned" class="form-control">
             </div>
-            <div class="form-group">
-                <label>Buy in £:</label>
-                <input type="text" v-model="buyInPrice" class="form-control">
-            </div>
         </form>
     </div>
 
@@ -30,7 +26,6 @@
         mixins: [common],
         data() {
             return {
-                buyInPrice: 1.00,
                 numberCoinsOwned: 5.82,
                 previousPrice:{},
                 CurrentPrice: null
@@ -88,10 +83,6 @@
 
             getTotalHoldingValue: function(){
                 return "Holdings £" + this.getCurrentValue();
-            },
-
-            getTotalGain: function(){
-                return this.getCurrentValue// - this.buyInPrice;
             },
 
             getCurrentValue:function(){
