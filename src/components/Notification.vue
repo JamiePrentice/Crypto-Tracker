@@ -59,14 +59,12 @@
                                 if(this.CurrentPrice > this.previousPrice){
                                     this.fireNotification  ("BUY BUY BUY", "LTC: " + 
                                     this.getPercentageChange(this.previousPrice, this.CurrentPrice) + " | " + this.getChange(this.previousPrice, this.CurrentPrice) + " | £" + this.toTwoDecimalPlace(this.CurrentPrice)
-                                    + "\n" + this.getCurrentGains() + "\n"
-                                     + this.getTotalHoldingValue() + " | " + this.getTotalGain()
+                                    + "\n" + this.getCurrentGains() + " | "+ this.getTotalHoldingValue()
                                     , Rocket);
                                 }else if (this.CurrentPrice < this.previousPrice){
                                     this.fireNotification  ("SELL SELL SELL", "LTC: " + 
                                     this.getPercentageChange(this.previousPrice, this.CurrentPrice) + " | " + this.getChange(this.previousPrice, this.CurrentPrice) + " | £" + this.toTwoDecimalPlace(this.CurrentPrice)
-                                    + "\n" + this.getCurrentGains() + "\n"
-                                    + this.getTotalHoldingValue() + " | " + this.getTotalGain()
+                                    + "\n" + this.getCurrentGains() + " | "+ this.getTotalHoldingValue()
                                     , Caution);
                                 }
                             }
@@ -93,7 +91,7 @@
             },
 
             getTotalGain: function(){
-                return "Gains £" + this.getCurrentValue() - toFloat(this.buyInPrice);
+                return this.getCurrentValue// - this.buyInPrice;
             },
 
             getCurrentValue:function(){
@@ -118,6 +116,9 @@
 
 
 <style scoped>
+div{
+    color: #FFF;
+}
 label{
     color: #FFF;
 }
