@@ -52,15 +52,9 @@
                         this.CurrentPrice = response.data.data.amount;
                             if(this.previousPrice != null){
                                 if(this.CurrentPrice > this.previousPrice){
-                                    this.fireNotification  ("BUY BUY BUY", "LTC: " + 
-                                    this.getPercentageChange(this.previousPrice, this.CurrentPrice) + " | " + this.getChange(this.previousPrice, this.CurrentPrice) + " | £" + this.toTwoDecimalPlace(this.CurrentPrice)
-                                    + "\n" + this.getCurrentGains() + " | "+ this.getTotalHoldingValue()
-                                    , Rocket);
+                                    this.gain();
                                 }else if (this.CurrentPrice < this.previousPrice){
-                                    this.fireNotification  ("SELL SELL SELL", "LTC: " + 
-                                    this.getPercentageChange(this.previousPrice, this.CurrentPrice) + " | " + this.getChange(this.previousPrice, this.CurrentPrice) + " | £" + this.toTwoDecimalPlace(this.CurrentPrice)
-                                    + "\n" + this.getCurrentGains() + " | "+ this.getTotalHoldingValue()
-                                    , Caution);
+                                    this.loss();
                                 }
                             }
                     })
@@ -98,6 +92,19 @@
                 }else{
                     return "You just lost: £" + difference;
                 }
+            },
+
+            info: function(){
+                return this.getPercentageChange(this.previousPrice, this.CurrentPrice) + " | " + this.getChange(this.previousPrice, this.CurrentPrice) + " | £" + this.toTwoDecimalPlace(this.CurrentPrice)
+                + "\n" + this.getCurrentGains() + " | "+ this.getTotalHoldingValue()
+            },
+
+            gain: function(){
+                this.fireNotification("HODL HODL HODl", "LTC: " + this.info(), Rocket);
+            },
+
+            loss: function(){
+                this.fireNotification("SELL SELL SELL", "LTC: " + this.info(), Caution);
             }
 
         }
