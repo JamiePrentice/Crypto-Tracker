@@ -7,6 +7,12 @@
                 <input type="text" v-model="numberCoinsOwned" class="form-control">
             </div>
         </form>
+
+        <ul id="example-1">
+            <li v-for="log in Logging">
+                {{ log }}
+            </li>
+        </ul>
     </div>
 
 </template>
@@ -28,7 +34,8 @@
             return {
                 numberCoinsOwned: 5.82,
                 previousPrice:{},
-                CurrentPrice: null
+                CurrentPrice: null,
+                Logging: []
             }
         },
         created(){
@@ -48,6 +55,7 @@
                 var ltcEndPoint = 'https://api.coinbase.com/v2/prices/LTC-GBP/spot';
                 axios.get(ltcEndPoint)
                     .then(response => {
+                        this.Logging.push(this.info());
                         this.previousPrice = this.CurrentPrice;
                         this.CurrentPrice = response.data.data.amount;
                             if(this.previousPrice != null){
