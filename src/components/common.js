@@ -1,7 +1,7 @@
 import Ping from '../assets/ping.wav'
 
 var CommonFunctions = {
-    
+
     methods: {
 
         toTwoDecimalPlace: function(string) {
@@ -36,10 +36,9 @@ var CommonFunctions = {
             };
         },
 
-        registerNotifications: function(){
+        enableNotifications: function(){
             if(window.Notification && Notification.permission !== "denied") {
                 Notification.requestPermission(function(status) {
-                    
                 });
             }
         },

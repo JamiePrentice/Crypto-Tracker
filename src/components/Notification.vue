@@ -39,7 +39,7 @@
             }
         },
         created(){
-            this.registerNotifications();
+            this.enableNotifications();
             this.fireNotification (
                 "Connected",
                 "Tracking your LTC",
@@ -55,9 +55,9 @@
                 var ltcEndPoint = 'https://api.coinbase.com/v2/prices/LTC-GBP/spot';
                 axios.get(ltcEndPoint)
                     .then(response => {
-                        this.Logging.push(this.info());
                         this.previousPrice = this.CurrentPrice;
                         this.CurrentPrice = response.data.data.amount;
+                        this.Logging.push(this.info());
                             if(this.previousPrice != null){
                                 if(this.CurrentPrice > this.previousPrice){
                                     this.gain();
