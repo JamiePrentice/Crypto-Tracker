@@ -57,8 +57,8 @@
                     .then(response => {
                         this.previousPrice = this.CurrentPrice;
                         this.CurrentPrice = response.data.data.amount;
-                        this.Logging.push(this.info());
-                            if(this.previousPrice != null){
+                            if(this.previousPrice != null && this.previousPrice != this.CurrentPrice){
+                                this.Logging.push(this.info());
                                 if(this.CurrentPrice > this.previousPrice){
                                     this.gain();
                                 }else if (this.CurrentPrice < this.previousPrice){
