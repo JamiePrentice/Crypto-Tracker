@@ -68,7 +68,25 @@
                     })
             },
 
+            fetchCryptoData: function(crypto, currency){
+                axios.all([getSpotPrice(crypto, currency), getBuyPrice(crypto, currency), getSellPrice(crypto, currency)])
+                    .then(axios.spread(function (spot, buy, sell) {
+                        // Both requests are now complete
+                    }));
+            },
 
+            fetchSpotPrice: function(crypto, currency){
+                return axios.get('https://api.coinbase.com/v2/prices/' + crypto + '-' +currency +'/spot')
+            },
+
+            fetchBuyPrice: function(crypto, currency){
+                return axios.get('https://api.coinbase.com/v2/prices/' + crypto + '-' +currency +'/buy')
+            },
+
+            fetchSellPrice: function(crypto, currency){
+                return axios.get('https://api.coinbase.com/v2/prices/' + crypto + '-' +currency +'/sell')
+            },
+            
             getPercentageChange: function(oldNumber, newNumber){
                 var decreaseValue = this.invertNumber(oldNumber - newNumber);
                 var symbol = (oldNumber > newNumber) ? "-" : "+";
