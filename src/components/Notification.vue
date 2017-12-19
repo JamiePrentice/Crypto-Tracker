@@ -13,6 +13,8 @@
                 {{ log }}
             </li>
         </ul>
+
+        {{ CryptoData }}
     </div>
 
 </template>
@@ -35,7 +37,8 @@
                 numberCoinsOwned: 5.82,
                 previousPrice:{},
                 CurrentPrice: null,
-                Logging: []
+                Logging: [],
+                CryptoData: []
             }
         },
         created(){
@@ -46,6 +49,7 @@
                 Plug
             );
             setInterval(function () {
+                this.fetchCryptoData('LTC', 'GBP')
                 this.getCurrentPrice()
             }.bind(this), 10000); 
         },
@@ -69,10 +73,14 @@
             },
 
             fetchCryptoData: function(crypto, currency){
-                axios.all([getSpotPrice(crypto, currency), getBuyPrice(crypto, currency), getSellPrice(crypto, currency)])
+                axios.all([this.fetchSpotPrice(crypto, currency), this.fetchBuyPrice(crypto, currency), this.fetchSellPrice(crypto, currency)])
                     .then(axios.spread(function (spot, buy, sell) {
-                        // Both requests are now complete
-                    }));
+                        this.CryptoData.push({
+                            "spot": spot.data.data.amount,
+                            "buy": buy.data.data.amount,
+                            "sell": sell.data.data.amount,
+                        })
+                    }.bind(this)));
             },
 
             fetchSpotPrice: function(crypto, currency){
@@ -126,7 +134,7 @@
             },
 
             gain: function(){
-                this.fireNotification("HODL HODL HODl", "LTC: " + this.info(), Rocket);
+                this.fireNotification("HODL HODL HODL", "LTC: " + this.info(), Rocket);
             },
 
             loss: function(){
