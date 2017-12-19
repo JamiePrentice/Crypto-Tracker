@@ -1,6 +1,6 @@
 import Ping from '../assets/ping.wav'
 
-var MyMixin = {
+var CommonFunctions = {
     
     methods: {
 
@@ -41,4 +41,4 @@ var MyMixin = {
     }
 };
 
-export default MyMixin;
+export default CommonFunctions;
