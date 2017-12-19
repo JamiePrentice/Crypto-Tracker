@@ -23,21 +23,27 @@ var CommonFunctions = {
 
         fireNotification: function(title, text, image){
             new Audio(Ping).play();
-            new Notification(
+            var notification = new Notification(
                 title, { 
                     body: text,
                     icon: image
                 }
-            ); 
+            );
+
+            notification.onclick = function() {
+                notification.clear();
+                window.focus();
+            };
         },
 
         registerNotifications: function(){
             if(window.Notification && Notification.permission !== "denied") {
                 Notification.requestPermission(function(status) {
-
+                    
                 });
             }
         },
+        
     }
 };
 
