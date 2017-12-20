@@ -195,11 +195,11 @@
             },
 
             gain: function(){
-                this.fireNotification("HODL HODL HODL", " Spot " + this.currencySelected + ": " + this.info(), Rocket);
+                this.fireNotification("HODL HODL HODL", "Spot " + this.currencySelected + ": " + this.info(), Rocket);
             },
 
             loss: function(){
-                this.fireNotification("SELL SELL SELL", " Spot " + this.currencySelected + ": " + this.info(), Caution);
+                this.fireNotification("SELL SELL SELL", "Spot " + this.currencySelected + ": " + this.info(), Caution);
             }
 
         }
