@@ -1,20 +1,59 @@
 <template>
 
-    <div>
-        <form class="form-inline">
-            <div class="form-group">
-                <label># of LTC:</label>
-                <input type="text" v-model="numberCoinsOwned" class="form-control">
-            </div>
-        </form>
+    <div>     
+        <br>
+        <div class="ui form">
+            <div class="inline fields">
+                <label>I bought</label>
+                <div class="field">
+                    <input type="number" placeholder="1.00" v-model="cryptoOwned" :disabled="inputDisabled">
+                </div>
 
-        <ul id="example-1">
+                <div class="field">
+                    <select class="ui fluid search dropdown" disabled>
+                        <option value="0">LTC</option>
+                        <option value="1">ETH</option>
+                        <option value="2">BTC</option>
+                    </select>
+                </div>
+
+                <label>for a total of</label>
+
+                <div class="field">
+                    <select class="ui fluid search dropdown" disabled>
+                        <option value="0">£</option>
+                        <option value="1">$</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <input type="number" placeholder="1000.00" v-model="cryptoBookprice" :disabled="inputDisabled">
+                </div>
+                
+                <button class="ui button" type="submit" @click="inputDisabled = !inputDisabled">Lock and track</button>
+
+            </div>
+        </div>
+
+        <h3>Changes</h3>
+        <ul>
             <li v-for="log in Logging">
                 {{ log }}
             </li>
         </ul>
 
-        {{ CryptoData }}
+        <h3>Data</h3>
+        <ul>
+            <li v-for="data in CryptoData">
+                {{ data }}
+            </li>
+        </ul>
+
+        <h3> Help </h3>
+        <p> Chrome Notification Settings - chrome://settings/content/notifications</p>
+        <p> Firefox Notification Settings - about:preferences#privacy > Permissions > Settings </p>
+        
+        
     </div>
 
 </template>
@@ -34,7 +73,9 @@
         mixins: [common],
         data() {
             return {
-                numberCoinsOwned: 5.82,
+                inputDisabled: false,
+                cryptoOwned: 5.82,
+                cryptoBookprice: 0.01,
                 previousPrice:{},
                 CurrentPrice: null,
                 Logging: [],
@@ -51,7 +92,7 @@
             setInterval(function () {
                 this.fetchCryptoData('LTC', 'GBP')
                 this.getCurrentPrice()
-            }.bind(this), 10000); 
+            }.bind(this), 15000); 
         },
         methods: {
             getCurrentPrice: function(){
@@ -80,6 +121,7 @@
                             "spot": spot.data.data.amount,
                             "buy": buy.data.data.amount,
                             "sell": sell.data.data.amount,
+                            "spread": this.toTwoDecimalPlace(buy.data.data.amount - sell.data.data.amount)
                         })
                     }.bind(this)));
             },
@@ -119,11 +161,15 @@
             },
 
             getCurrentValue:function(){
-                return this.toTwoDecimalPlace(this.CurrentPrice * this.numberCoinsOwned)
+                return this.toTwoDecimalPlace(this.CurrentPrice * this.cryptoOwned)
+            },
+
+            getProfit: function(){
+                return this.toTwoDecimalPlace((this.CurrentPrice * this.cryptoOwned) - this.cryptoBookprice)
             },
 
             getCurrentGains: function(){
-                var difference = (this.previousPrice - this.CurrentPrice) * this.numberCoinsOwned;
+                var difference = (this.previousPrice - this.CurrentPrice) * this.cryptoOwned;
                 difference = this.invertNumber(this.toTwoDecimalPlace(difference))
 
                 if(this.CurrentPrice > this.previousPrice){
@@ -135,7 +181,7 @@
 
             info: function(){
                 return this.getPercentageChange(this.previousPrice, this.CurrentPrice) + " | " + this.getChange(this.previousPrice, this.CurrentPrice) + " | £" + this.toTwoDecimalPlace(this.CurrentPrice)
-                + "\n" + this.getCurrentGains() + " | "+ this.getTotalHoldingValue()
+                + "\n" + this.getCurrentGains() + " | " + this.getTotalHoldingValue() 
             },
 
             gain: function(){
@@ -156,7 +202,13 @@
 div{
     color: #FFF;
 }
+
 label{
-    color: #FFF;
+    font-size: 1.25em !important;
+    color: #FFF !important;
+}
+
+input {
+    text-align: right;
 }
 </style>
