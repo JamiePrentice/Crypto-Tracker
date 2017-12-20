@@ -73,9 +73,10 @@
             },
 
             fetchCryptoData: function(crypto, currency){
-                axios.all([this.fetchSpotPrice(crypto, currency), this.fetchBuyPrice(crypto, currency), this.fetchSellPrice(crypto, currency)])
-                    .then(axios.spread(function (spot, buy, sell) {
+                axios.all([this.fetchTime(), this.fetchSpotPrice(crypto, currency), this.fetchBuyPrice(crypto, currency), this.fetchSellPrice(crypto, currency)])
+                    .then(axios.spread(function (time, spot, buy, sell) {
                         this.CryptoData.push({
+                            "time": time.data.data.epoch,
                             "spot": spot.data.data.amount,
                             "buy": buy.data.data.amount,
                             "sell": sell.data.data.amount,
@@ -93,6 +94,10 @@
 
             fetchSellPrice: function(crypto, currency){
                 return axios.get('https://api.coinbase.com/v2/prices/' + crypto + '-' +currency +'/sell')
+            },
+
+            fetchTime: function(){
+                return axios.get('https://api.coinbase.com/v2/time')
             },
             
             getPercentageChange: function(oldNumber, newNumber){
