@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Cryptocurrency from '@/pages/crypto'
+import Cryptocurrency from '@/pages/Crypto'
 
 Vue.use(Router)
 
