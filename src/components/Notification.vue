@@ -10,10 +10,10 @@
                 </div>
 
                 <div class="field">
-                    <select class="ui fluid search dropdown" disabled>
-                        <option value="0">LTC</option>
-                        <option value="1">ETH</option>
-                        <option value="2">BTC</option>
+                    <select class="ui fluid search dropdown" v-model="currencySelected" :disabled="inputDisabled">
+                        <option value="LTC">LTC</option>
+                        <option value="ETC">ETH</option>
+                        <option value="BTC">BTC</option>
                     </select>
                 </div>
 
@@ -49,10 +49,15 @@
             </li>
         </ul>
 
-        <h3> Help </h3>
-        <p> Chrome Notification Settings - chrome://settings/content/notifications</p>
-        <p> Firefox Notification Settings - about:preferences#privacy > Permissions > Settings </p>
-        
+        <br>
+        <br>
+        <br>
+        <div class="help">
+            <h3> Help </h3>
+            <p> If notification are not firing check your permissions  </p>
+            <p> Chrome Notification Settings - chrome://settings/content/notifications</p>
+            <p> Firefox Notification Settings - about:preferences#privacy > Permissions > Settings </p>
+        </div>
         
     </div>
 
@@ -73,8 +78,9 @@
         mixins: [common],
         data() {
             return {
+                currencySelected: 0,
                 inputDisabled: false,
-                cryptoOwned: 5.82,
+                cryptoOwned: 0.01,
                 cryptoBookprice: 0.01,
                 previousPrice:{},
                 CurrentPrice: null,
@@ -91,7 +97,7 @@
             );
             setInterval(function () {
                 this.fetchCryptoData('LTC', 'GBP')
-                this.getCurrentPrice()
+                this.getCurrentPrice(currencySelected)
             }.bind(this), 15000); 
         },
         methods: {
@@ -127,15 +133,15 @@
             },
 
             fetchSpotPrice: function(crypto, currency){
-                return axios.get('https://api.coinbase.com/v2/prices/' + crypto + '-' +currency +'/spot')
+                return axios.get('https://api.coinbase.com/v2/prices/' + crypto + '-' +currency +'/spot');
             },
 
             fetchBuyPrice: function(crypto, currency){
-                return axios.get('https://api.coinbase.com/v2/prices/' + crypto + '-' +currency +'/buy')
+                return axios.get('https://api.coinbase.com/v2/prices/' + crypto + '-' +currency +'/buy');
             },
 
             fetchSellPrice: function(crypto, currency){
-                return axios.get('https://api.coinbase.com/v2/prices/' + crypto + '-' +currency +'/sell')
+                return axios.get('https://api.coinbase.com/v2/prices/' + crypto + '-' +currency +'/sell');
             },
 
             fetchTime: function(){
@@ -157,23 +163,23 @@
             },
 
             getTotalHoldingValue: function(){
-                return "Holdings £" + this.getCurrentValue();
+                return this.getCurrentValue();
             },
 
             getCurrentValue:function(){
-                return this.toTwoDecimalPlace(this.CurrentPrice * this.cryptoOwned)
+                return this.CurrentPrice * this.cryptoOwned;
             },
 
             getProfit: function(){
-                return this.toTwoDecimalPlace((this.CurrentPrice * this.cryptoOwned) - this.cryptoBookprice)
+                return this.toTwoDecimalPlace((this.CurrentPrice * this.cryptoOwned) - this.cryptoBookprice);
             },
 
             getCurrentGains: function(){
                 var difference = (this.previousPrice - this.CurrentPrice) * this.cryptoOwned;
-                difference = this.invertNumber(this.toTwoDecimalPlace(difference))
+                difference = this.invertNumber(this.toTwoDecimalPlace(difference));
 
                 if(this.CurrentPrice > this.previousPrice){
-                    return "You just gained: £" + difference;
+                    return "You just made: £" + difference;
                 }else{
                     return "You just lost: £" + difference;
                 }
@@ -181,7 +187,8 @@
 
             info: function(){
                 return this.getPercentageChange(this.previousPrice, this.CurrentPrice) + " | " + this.getChange(this.previousPrice, this.CurrentPrice) + " | £" + this.toTwoDecimalPlace(this.CurrentPrice)
-                + "\n" + this.getCurrentGains() + " | " + this.getTotalHoldingValue() 
+                + "\nHLD: " + this.getPercentageChange(this.cryptoBookprice, this.getTotalHoldingValue()) + " | " + this.getChange(this.cryptoBookprice, this.getTotalHoldingValue()) + " | £" + this.toTwoDecimalPlace(this.getCurrentValue())
+                + "\n" + this.getCurrentGains()
             },
 
             gain: function(){
@@ -199,11 +206,15 @@
 
 
 <style scoped>
-div{
+div {
     color: #FFF;
 }
 
-label{
+.help {
+    color: grey
+}
+
+label {
     font-size: 1.25em !important;
     color: #FFF !important;
 }
