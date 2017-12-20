@@ -90,15 +90,15 @@
         },
         created(){
             this.enableNotifications();
-            this.fireNotification (
-                "Connected",
-                "Tracking your LTC",
-                Plug
-            );
         },
         methods: {
 
             startTracking(){
+                this.fireNotification (
+                    "Connected",
+                    "Tracking your " + this.currencySelected,
+                    Plug
+                );
                 setInterval(function () {
                     this.fetchCryptoData(this.currencySelected, 'GBP')
                     this.getCurrentPrice(this.currencySelected)
@@ -106,8 +106,8 @@
             },
 
             getCurrentPrice: function(crypto){
-                var ltcEndPoint = 'https://api.coinbase.com/v2/prices/' + crypto +'-GBP/spot';
-                axios.get(ltcEndPoint)
+                var coinbaseEndpoint = 'https://api.coinbase.com/v2/prices/' + crypto +'-GBP/spot';
+                axios.get(coinbaseEndpoint)
                     .then(response => {
                         this.previousPrice = this.CurrentPrice;
                         this.CurrentPrice = response.data.data.amount;
@@ -190,16 +190,16 @@
 
             info: function(){
                 return this.getPercentageChange(this.previousPrice, this.CurrentPrice) + " | " + this.getChange(this.previousPrice, this.CurrentPrice) + " | £" + this.toTwoDecimalPlace(this.CurrentPrice)
-                + "\nHLD: " + this.getPercentageChange(this.cryptoBookprice, this.getTotalHoldingValue()) + " | " + this.getChange(this.cryptoBookprice, this.getTotalHoldingValue()) + " | £" + this.toTwoDecimalPlace(this.getCurrentValue())
+                + "\nPortfolio: " + this.getPercentageChange(this.cryptoBookprice, this.getTotalHoldingValue()) + " | " + this.getChange(this.cryptoBookprice, this.getTotalHoldingValue()) + " | £" + this.toTwoDecimalPlace(this.getCurrentValue())
                 + "\n" + this.getCurrentGains()
             },
 
             gain: function(){
-                this.fireNotification("HODL HODL HODL", this.currencySelected + ": " + this.info(), Rocket);
+                this.fireNotification("HODL HODL HODL", " Spot " + this.currencySelected + ": " + this.info(), Rocket);
             },
 
             loss: function(){
-                this.fireNotification("SELL SELL SELL", this.currencySelected + ": " + this.info(), Caution);
+                this.fireNotification("SELL SELL SELL", " Spot " + this.currencySelected + ": " + this.info(), Caution);
             }
 
         }
