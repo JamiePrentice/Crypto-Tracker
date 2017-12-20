@@ -12,7 +12,7 @@
                 <div class="field">
                     <select class="ui fluid search dropdown" v-model="currencySelected" :disabled="inputDisabled">
                         <option value="LTC">LTC</option>
-                        <option value="ETC">ETH</option>
+                        <option value="ETH">ETH</option>
                         <option value="BTC">BTC</option>
                     </select>
                 </div>
@@ -30,7 +30,7 @@
                     <input type="number" placeholder="1000.00" v-model="cryptoBookprice" :disabled="inputDisabled">
                 </div>
                 
-                <button class="ui button" type="submit" @click="inputDisabled = !inputDisabled">Lock and track</button>
+                <button class="ui button" type="submit" @click="inputDisabled = !inputDisabled" v-on:click="this.startTracking" :disabled="inputDisabled">Lock and track</button>
 
             </div>
         </div>
@@ -95,15 +95,18 @@
                 "Tracking your LTC",
                 Plug
             );
-            setInterval(function () {
-                this.fetchCryptoData('LTC', 'GBP')
-                this.getCurrentPrice(currencySelected)
-            }.bind(this), 15000); 
         },
         methods: {
-            getCurrentPrice: function(){
-                
-                var ltcEndPoint = 'https://api.coinbase.com/v2/prices/LTC-GBP/spot';
+
+            startTracking(){
+                setInterval(function () {
+                    this.fetchCryptoData(this.currencySelected, 'GBP')
+                    this.getCurrentPrice(this.currencySelected)
+                }.bind(this), 15000); 
+            },
+
+            getCurrentPrice: function(crypto){
+                var ltcEndPoint = 'https://api.coinbase.com/v2/prices/' + crypto +'-GBP/spot';
                 axios.get(ltcEndPoint)
                     .then(response => {
                         this.previousPrice = this.CurrentPrice;
@@ -192,11 +195,11 @@
             },
 
             gain: function(){
-                this.fireNotification("HODL HODL HODL", "LTC: " + this.info(), Rocket);
+                this.fireNotification("HODL HODL HODL", this.currencySelected + ": " + this.info(), Rocket);
             },
 
             loss: function(){
-                this.fireNotification("SELL SELL SELL", "LTC: " + this.info(), Caution);
+                this.fireNotification("SELL SELL SELL", this.currencySelected + ": " + this.info(), Caution);
             }
 
         }
