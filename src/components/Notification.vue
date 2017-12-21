@@ -10,10 +10,11 @@
                 </div>
 
                 <div class="field">
-                    <select class="ui fluid search dropdown" v-model="currencySelected" :disabled="inputDisabled">
-                        <option value="LTC">LTC</option>
-                        <option value="ETH">ETH</option>
+                    <select class="ui fluid search dropdown" v-model="currencySelected" :disabled="inputDisabled">    
+                        <option value="BCH">BCH</option>
                         <option value="BTC">BTC</option>
+                        <option value="ETH">ETH</option>
+                        <option value="LTC">LTC</option>
                     </select>
                 </div>
 
