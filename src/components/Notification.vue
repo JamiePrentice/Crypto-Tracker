@@ -11,10 +11,10 @@
 
                 <div class="field">
                     <select class="ui fluid search dropdown" v-model="currencySelected" :disabled="inputDisabled">    
-                        <option value="BCH">BCH</option>
-                        <option value="BTC">BTC</option>
-                        <option value="ETH">ETH</option>
-                        <option value="LTC">LTC</option>
+                        <option value="BCH">Bitcoin Cash</option>
+                        <option value="BTC">Bitcoin</option>
+                        <option value="ETH">Ethereum</option>
+                        <option value="LTC">Litecoin</option>
                     </select>
                 </div>
 
