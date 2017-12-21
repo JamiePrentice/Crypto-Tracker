@@ -95,12 +95,13 @@
         methods: {
 
             startTracking(){
+                this.clearNotifications();
                 this.fireNotification (
                     "Connected",
                     "Tracking your " + this.currencySelected,
                     Plug
                 );
-                setInterval(function () {
+                window.setInterval(function () {
                     this.fetchCryptoData(this.currencySelected, 'GBP')
                     this.getCurrentPrice(this.currencySelected)
                 }.bind(this), 15000); 

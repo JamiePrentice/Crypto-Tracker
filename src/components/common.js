@@ -31,7 +31,6 @@ var CommonFunctions = {
             );
 
             notification.onclick = function() {
-                notification.clear();
                 window.focus();
             };
         },
@@ -42,6 +41,10 @@ var CommonFunctions = {
                 });
             }
         },
+
+        clearNotifications: function(){
+            // Clear all old notifications here
+        }
         
     }
 };
