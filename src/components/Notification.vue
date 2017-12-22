@@ -134,7 +134,10 @@
                             "sell": sell.data.data.amount,
                             "spread": this.toTwoDecimalPlace(buy.data.data.amount - sell.data.data.amount)
                         })
-                    }.bind(this)));
+                    }.bind(this)))
+                    .then(function(){
+                        // fire notifications
+                    });
             },
 
             fetchSpotPrice: function(crypto, currency){
@@ -151,6 +154,14 @@
 
             fetchTime: function(){
                 return axios.get('https://api.coinbase.com/v2/time')
+            },
+
+            getCurrentValue: function(){
+                return this.CryptoData[this.CryptoData.length - 1];
+            },
+
+            getPreviousValue: function(){
+                return this.CryptoData[this.CryptoData.length - 2];
             },
             
             getPercentageChange: function(oldNumber, newNumber){
