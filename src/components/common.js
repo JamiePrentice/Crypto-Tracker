@@ -6,7 +6,7 @@ var CommonFunctions = {
 
         toTwoDecimalPlace: function(string) {
             var fixed = parseFloat(string);
-            return fixed.toLocaleString('en', {currency: "GBP", minimumFractionDigits: "2", maximumFractionDigits: "2"});
+            return fixed.toLocaleString('en', {minimumFractionDigits: "2", maximumFractionDigits: "2"});
         },
 
         toThousandSeperated: function(string) {
