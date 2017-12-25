@@ -69,6 +69,7 @@ export default {
             };
         }
       },
+
       draw: function(){
         var ohlc = [];
         var volume = [];
@@ -76,8 +77,8 @@ export default {
         var dataLength = this.messages.length;
         // set the allowed units for data grouping
         var groupingUnits = [[
-            'week',                         // unit name
-            [1]                             // allowed multiples
+            'week',
+            [1]
         ], [
             'month',
             [1, 2, 3, 4, 6]
@@ -96,13 +97,13 @@ export default {
                 parseFloat(message.open_24h), // open
                 parseFloat(message.high_24h), // high
                 parseFloat(message.low_24h), // low
-                parseFloat(message.low_24h) // close
+                parseFloat(message.price) // close
             ]);
 
+
             volume.push([
-                message.time, // the date
+                message.time,
                 parseFloat(snapshotVolume)
-                // parseInt(message.volume_24h - lastVolume) // the volume
             ]);
             
         });
@@ -110,13 +111,17 @@ export default {
 
     // create the chart
     Highcharts.stockChart('container', {
-
         rangeSelector: {
             selected: 1
         },
 
         title: {
             text: 'AAPL Historical'
+        },
+
+        rangeSelector : {
+            buttons: [],
+            inputEnabled:false
         },
 
         yAxis: [{
@@ -132,7 +137,8 @@ export default {
             resize: {
                 enabled: true
             }
-        }, {
+        }, 
+        {
             labels: {
                 align: 'right',
                 x: -3
@@ -158,21 +164,16 @@ export default {
         series: [
             {
                 type: 'candlestick',
-                name: 'AAPL',
-                data: ohlc,
-                dataGrouping: {
-                    units: groupingUnits
-                }
-            }, {
+                name: 'APPL',
+                data: ohlc
+            },
+            {
                 type: 'column',
                 name: 'Volume',
                 data: volume,
-                yAxis: 1,
-                dataGrouping: {
-                    units: groupingUnits
-                }
+                yAxis: 1
             }]
-    });
+        });
       }
   }
 }
